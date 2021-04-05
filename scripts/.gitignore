@@ -1,0 +1,4 @@
+/pref_shps/
+/*.gpkg
+/Pipfile.lock
+/*.feather
