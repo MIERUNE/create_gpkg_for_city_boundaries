@@ -1,6 +1,6 @@
 import geopandas as gpd
 
-town_gdf = gpd.read_file("boundary.gpkg", layer='town')
+town_gdf = gpd.read_file("../data/boundary.gpkg", layer="town")
 necessary_columns = [
     "AREA_CODE",
     "PREF_NAME",
@@ -10,12 +10,12 @@ necessary_columns = [
     "AREA",
     "X_CODE",
     "Y_CODE",
-    "geometry"
+    "geometry",
 ]
 town_gdf = town_gdf[necessary_columns]
 
 # 1系
-town_gdf['system_number'] = None
+town_gdf["system_number"] = None
 
 one_city_list = [
     "奄美市",
@@ -41,8 +41,11 @@ one_city_list = [
     "与論町",
     "三島村",
 ]
-town_gdf["system_number"].mask((town_gdf["CITY_NAME"].isin(one_city_list)) & (
-        town_gdf["PREF_NAME"] == "鹿児島県"), 1, inplace=True)
+town_gdf["system_number"].mask(
+    (town_gdf["CITY_NAME"].isin(one_city_list)) & (town_gdf["PREF_NAME"] == "鹿児島県"),
+    1,
+    inplace=True,
+)
 town_gdf["system_number"].mask(town_gdf["PREF_NAME"] == "長崎県", 1, inplace=True)
 
 # 2系
@@ -54,11 +57,13 @@ two_pref_list = [
     "宮崎県",
 ]
 town_gdf["system_number"].mask(
-    town_gdf["PREF_NAME"].isin(two_pref_list),
+    town_gdf["PREF_NAME"].isin(two_pref_list), 2, inplace=True
+)
+town_gdf["system_number"].mask(
+    (~town_gdf["CITY_NAME"].isin(one_city_list)) & (town_gdf["PREF_NAME"] == "鹿児島県"),
     2,
-    inplace=True)
-town_gdf["system_number"].mask((~town_gdf["CITY_NAME"].isin(one_city_list)) & (
-        town_gdf["PREF_NAME"] == "鹿児島県"), 2, inplace=True)
+    inplace=True,
+)
 
 # 3系
 three_pref_list = [
@@ -66,77 +71,42 @@ three_pref_list = [
     "島根県",
     "広島県",
 ]
-town_gdf["system_number"].mask(town_gdf["PREF_NAME"].isin(
-    three_pref_list), 3, inplace=True)
+town_gdf["system_number"].mask(
+    town_gdf["PREF_NAME"].isin(three_pref_list), 3, inplace=True
+)
 
 # 4系
-four_pref_list = [
-    "香川県",
-    "愛媛県",
-    "徳島県",
-    "高知県"
-]
+four_pref_list = ["香川県", "愛媛県", "徳島県", "高知県"]
 town_gdf["system_number"].mask(
-    town_gdf["PREF_NAME"].isin(four_pref_list),
-    4,
-    inplace=True)
+    town_gdf["PREF_NAME"].isin(four_pref_list), 4, inplace=True
+)
 
 # 5系
-five_pref_list = [
-    "兵庫県",
-    "鳥取県",
-    "岡山県"
-]
+five_pref_list = ["兵庫県", "鳥取県", "岡山県"]
 town_gdf["system_number"].mask(
-    (town_gdf["PREF_NAME"].isin(five_pref_list)),
-    5,
-    inplace=True)
+    (town_gdf["PREF_NAME"].isin(five_pref_list)), 5, inplace=True
+)
 
 # 6系
-six_pref_list = [
-    "京都府",
-    "大阪府",
-    "福井県",
-    "滋賀県",
-    "三重県",
-    "奈良県",
-    "和歌山県"
-]
+six_pref_list = ["京都府", "大阪府", "福井県", "滋賀県", "三重県", "奈良県", "和歌山県"]
 town_gdf["system_number"].mask(
-    town_gdf["PREF_NAME"].isin(six_pref_list),
-    6,
-    inplace=True)
+    town_gdf["PREF_NAME"].isin(six_pref_list), 6, inplace=True
+)
 
 # 7系
-seven_pref_list = [
-    "石川県",
-    "富山県",
-    "岐阜県",
-    "愛知県"
-]
-town_gdf["system_number"].mask(town_gdf["PREF_NAME"].isin(
-    seven_pref_list), 7, inplace=True)
+seven_pref_list = ["石川県", "富山県", "岐阜県", "愛知県"]
+town_gdf["system_number"].mask(
+    town_gdf["PREF_NAME"].isin(seven_pref_list), 7, inplace=True
+)
 
 # 8系
-eight_pref_list = [
-    "新潟県",
-    "長野県",
-    "山梨県",
-    "静岡県"
-]
-town_gdf["system_number"].mask(town_gdf["PREF_NAME"].isin(
-    eight_pref_list), 8, inplace=True)
+eight_pref_list = ["新潟県", "長野県", "山梨県", "静岡県"]
+town_gdf["system_number"].mask(
+    town_gdf["PREF_NAME"].isin(eight_pref_list), 8, inplace=True
+)
 
 # 9系
-nine_pref_list = [
-    "福島県",
-    "栃木県",
-    "茨城県",
-    "埼玉県",
-    "千葉県",
-    "群馬県",
-    "神奈川県"
-]
+nine_pref_list = ["福島県", "栃木県", "茨城県", "埼玉県", "千葉県", "群馬県", "神奈川県"]
 nine_city_list = [
     "千代田区",
     "中央区",
@@ -201,24 +171,19 @@ nine_city_list = [
     "青ヶ島村",
 ]
 town_gdf["system_number"].mask(
-    town_gdf["PREF_NAME"].isin(nine_pref_list),
+    town_gdf["PREF_NAME"].isin(nine_pref_list), 9, inplace=True
+)
+town_gdf["system_number"].mask(
+    (town_gdf["CITY_NAME"].isin(nine_city_list)) & (town_gdf["PREF_NAME"] == "東京都"),
     9,
-    inplace=True)
-town_gdf["system_number"].mask((town_gdf["CITY_NAME"].isin(nine_city_list))
-                      & (town_gdf["PREF_NAME"] == "東京都"), 9, inplace=True)
+    inplace=True,
+)
 
 # 10系
-ten_pref_list = [
-    "青森県",
-    "秋田県",
-    "山形県",
-    "岩手県",
-    "宮城県"
-]
+ten_pref_list = ["青森県", "秋田県", "山形県", "岩手県", "宮城県"]
 town_gdf["system_number"].mask(
-    town_gdf["PREF_NAME"].isin(ten_pref_list),
-    10,
-    inplace=True)
+    town_gdf["PREF_NAME"].isin(ten_pref_list), 10, inplace=True
+)
 
 # 11系
 eleven_city_list = [
@@ -263,10 +228,13 @@ eleven_city_list = [
     "伊達市",
     "豊浦町",
     "壮瞥町",
-    "洞爺湖町"
+    "洞爺湖町",
 ]
-town_gdf["system_number"].mask((town_gdf["CITY_NAME"].isin(
-    eleven_city_list)) & (town_gdf["PREF_NAME"] == "北海道"), 11, inplace=True)
+town_gdf["system_number"].mask(
+    (town_gdf["CITY_NAME"].isin(eleven_city_list)) & (town_gdf["PREF_NAME"] == "北海道"),
+    11,
+    inplace=True,
+)
 
 # 13系
 thirteen_city_list = [
@@ -312,23 +280,29 @@ thirteen_city_list = [
     "訓子府町",
     "置戸町",
     "佐呂間町",
-    "大空町"
+    "大空町",
 ]
 town_gdf["system_number"].mask(
-    (town_gdf["CITY_NAME"].isin(thirteen_city_list) & (
-            town_gdf["PREF_NAME"] == "北海道")), 13, inplace=True)
+    (town_gdf["CITY_NAME"].isin(thirteen_city_list) & (town_gdf["PREF_NAME"] == "北海道")),
+    13,
+    inplace=True,
+)
 
 # 12系
 not_twelve_city_list = eleven_city_list + thirteen_city_list
 town_gdf["system_number"].mask(
-    (town_gdf["PREF_NAME"] == "北海道") & (
-        ~town_gdf["CITY_NAME"].isin(not_twelve_city_list)),
+    (town_gdf["PREF_NAME"] == "北海道")
+    & (~town_gdf["CITY_NAME"].isin(not_twelve_city_list)),
     12,
-    inplace=True)
+    inplace=True,
+)
 
 # 14系：聟島列島、父島列島、母島列島、硫黄島
-town_gdf["system_number"].mask((town_gdf["CITY_NAME"] == "小笠原村") & (
-        town_gdf["PREF_NAME"] == "東京都"), 14, inplace=True)
+town_gdf["system_number"].mask(
+    (town_gdf["CITY_NAME"] == "小笠原村") & (town_gdf["PREF_NAME"] == "東京都"),
+    14,
+    inplace=True,
+)
 
 # 15系
 fifteen_city_list = [
@@ -373,67 +347,64 @@ fifteen_city_list = [
     "粟国村",
     "渡名喜村",
     "伊平屋村",
-    "伊是名村"
+    "伊是名村",
 ]
-town_gdf["system_number"].mask((town_gdf["CITY_NAME"].isin(
-    fifteen_city_list)) & (town_gdf["PREF_NAME"] == "沖縄県"), 15, inplace=True)
 town_gdf["system_number"].mask(
-    (town_gdf["X_CODE"] > 126) & (
-            town_gdf["X_CODE"] < 130) & (
-            town_gdf["PREF_NAME"] == "沖縄県"),
+    (town_gdf["CITY_NAME"].isin(fifteen_city_list)) & (town_gdf["PREF_NAME"] == "沖縄県"),
     15,
-    inplace=True)
+    inplace=True,
+)
+town_gdf["system_number"].mask(
+    (town_gdf["X_CODE"] > 126)
+    & (town_gdf["X_CODE"] < 130)
+    & (town_gdf["PREF_NAME"] == "沖縄県"),
+    15,
+    inplace=True,
+)
 
 # 16系
-sixteen_city_list = [
-    "平良市",
-    "石垣市",
-    "城辺町",
-    "下地町",
-    "上野村",
-    "伊良部町",
-    "多良間村",
-    "竹富町",
-    "与那国町"
-]
-town_gdf["system_number"].mask((town_gdf["CITY_NAME"].isin(
-    sixteen_city_list)) & (town_gdf["PREF_NAME"] == "沖縄県"), 16, inplace=True)
+sixteen_city_list = ["平良市", "石垣市", "城辺町", "下地町", "上野村", "伊良部町", "多良間村", "竹富町", "与那国町"]
 town_gdf["system_number"].mask(
-    (town_gdf["X_CODE"] < 126) & (
-            town_gdf["PREF_NAME"] == "沖縄県"),
+    (town_gdf["CITY_NAME"].isin(sixteen_city_list)) & (town_gdf["PREF_NAME"] == "沖縄県"),
     16,
-    inplace=True)
+    inplace=True,
+)
+town_gdf["system_number"].mask(
+    (town_gdf["X_CODE"] < 126) & (town_gdf["PREF_NAME"] == "沖縄県"), 16, inplace=True
+)
 
 # 17系
-seventeen_city_list = [
-    "南大東村",
-    "北大東村"
-]
-town_gdf["system_number"].mask((town_gdf["CITY_NAME"].isin(
-    seventeen_city_list)) & (town_gdf["PREF_NAME"] == "沖縄県"), 17, inplace=True)
+seventeen_city_list = ["南大東村", "北大東村"]
 town_gdf["system_number"].mask(
-    (town_gdf["X_CODE"] > 130) & (
-            town_gdf["PREF_NAME"] == "沖縄県"),
+    (town_gdf["CITY_NAME"].isin(seventeen_city_list))
+    & (town_gdf["PREF_NAME"] == "沖縄県"),
     17,
-    inplace=True)
+    inplace=True,
+)
+town_gdf["system_number"].mask(
+    (town_gdf["X_CODE"] > 130) & (town_gdf["PREF_NAME"] == "沖縄県"), 17, inplace=True
+)
 
 # 18,19系（沖ノ鳥島,南鳥島）は小笠原村のポリゴンに統合されてしまっていたため、現段階で算出できない
 # 18系：沖ノ鳥島
 town_gdf["system_number"].mask(
-    (town_gdf["Y_CODE"] < 28) & (
-            town_gdf["X_CODE"] < 140.5) & (
-            town_gdf["PREF_NAME"] == "東京都"),
+    (town_gdf["Y_CODE"] < 28)
+    & (town_gdf["X_CODE"] < 140.5)
+    & (town_gdf["PREF_NAME"] == "東京都"),
     18,
-    inplace=True)
+    inplace=True,
+)
 
 # 19系：南鳥島
 town_gdf["system_number"].mask(
-    (town_gdf["Y_CODE"].astype('float') < 28) & (
-            town_gdf["X_CODE"].astype('float') > 143) & (
-            town_gdf["PREF_NAME"] == "東京都"),
+    (town_gdf["Y_CODE"].astype("float") < 28)
+    & (town_gdf["X_CODE"].astype("float") > 143)
+    & (town_gdf["PREF_NAME"] == "東京都"),
     19,
-    inplace=True)
+    inplace=True,
+)
 
 # ファイル書き出し
-town_gdf.to_file("merge_boundary.gpkg", layer='add_system_number', driver="GPKG")
-
+town_gdf.to_file(
+    "../data/merge_boundary.gpkg", layer="add_system_number", driver="GPKG"
+)
