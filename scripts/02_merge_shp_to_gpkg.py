@@ -14,6 +14,10 @@ town_gdf["AREA_CODE"] = town_gdf["PREF"].str.cat(town_gdf["CITY"])
 city_gdf = town_gdf.dissolve(by="AREA_CODE", as_index=False)
 pref_gdf = city_gdf.dissolve(by="PREF", as_index=False)
 
+data_dir = Path("../data/")
+if not data_dir.exists():
+    data_dir.mkdir()
+
 pref_gdf.to_file("../data/boundary.gpkg", layer="pref", driver="GPKG")
 city_gdf.to_file("../data/boundary.gpkg", layer="city", driver="GPKG")
 town_gdf.to_file("../data/boundary.gpkg", layer="town", driver="GPKG")

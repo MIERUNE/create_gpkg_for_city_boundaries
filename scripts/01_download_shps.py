@@ -1,7 +1,6 @@
 import os
 import re
 import sys
-import time
 from concurrent.futures.thread import ThreadPoolExecutor
 from pathlib import Path
 
