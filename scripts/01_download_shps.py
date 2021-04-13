@@ -1,24 +1,26 @@
 import os
 import re
 import sys
+import time
 from concurrent.futures.thread import ThreadPoolExecutor
 from pathlib import Path
 
 import requests
 from tqdm import tqdm
 
-URL = "https://www.e-stat.go.jp/gis/statmap-search/data?dlserveyId=A002005212015&code={pref_code}&coordSys=1&format=shape&downloadType=5"
-
-str_pref = [str(pref_code).zfill(2) for pref_code in range(1, 48)]
-args = [(URL.format(pref_code=p), str(Path("../../").resolve())) for p in str_pref]
-
 
 def main():
-    """処理を実行します
+    """処理を実行します"""
+    URL = "https://www.e-stat.go.jp/gis/statmap-search/data?dlserveyId=A002005212015&code={pref_code}&coordSys=1&format=shape&downloadType=5"
 
-    """
-    with ThreadPoolExecutor() as executor:
-        executor.map(lambda p: file_download(*p), args)
+    download_dir = Path("../download")
+    if not download_dir.exists():
+        download_dir.mkdir()
+
+    str_pref = [str(pref_code).zfill(2) for pref_code in range(1, 48)]
+    args = [(URL.format(pref_code=p), download_dir.resolve()) for p in str_pref]
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        executor.map(lambda p: download_file(*p), args)
 
 
 def get_file_name_from_response(url, response):
@@ -41,12 +43,12 @@ def get_file_name_from_response(url, response):
     return file_name
 
 
-def file_download(url, dir_path, overwrite=True):
+def download_file(url, dir_path, overwrite=True):
     """URLと保存先ディレクトリを指定してファイルをダウンロード
 
     Args:
         url (str): ダウンロードリンク
-        dir_path (str): 保存するディレクトリのパス文字列
+        dir_path (Path): 保存するディレクトリのパス文字列
         overwrite (bool): ファイル上書きオプション。Trueなら上書き
 
     Returns:
@@ -59,9 +61,8 @@ def file_download(url, dir_path, overwrite=True):
     """
     res = requests.get(url, stream=True)
 
-    parent_dir = Path(dir_path).parent
     file_name = get_file_name_from_response(url, res)
-    download_path = parent_dir / file_name
+    download_path = dir_path / file_name
 
     if download_path.exists() and not overwrite:
         print("ファイルがすでに存在し、overwrite=Falseなのでダウンロードを中止します。")
@@ -69,7 +70,7 @@ def file_download(url, dir_path, overwrite=True):
 
     # content-lengthは必ず存在するわけでは無いためチェック
     try:
-        file_size = int(res.headers['content-length'])
+        file_size = int(res.headers["content-length"])
     except KeyError:
         file_size = None
     progress_bar = tqdm(total=file_size, unit="B", unit_scale=True)
@@ -77,7 +78,7 @@ def file_download(url, dir_path, overwrite=True):
     if res.status_code == 200:
         print(f"{url=}, {res.status_code=}")
         print(f"{file_name}のダウンロードを開始します")
-        with download_path.open('wb') as file:
+        with download_path.open("wb") as file:
             for chunk in res.iter_content(chunk_size=1024):
                 file.write(chunk)
                 progress_bar.update(len(chunk))
@@ -89,5 +90,5 @@ def file_download(url, dir_path, overwrite=True):
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
